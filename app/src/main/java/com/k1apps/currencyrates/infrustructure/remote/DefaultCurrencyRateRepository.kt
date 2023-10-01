@@ -9,7 +9,7 @@ class DefaultCurrencyRateRepository(private val api: CurrencyRateApi) : Currency
             val body = api.getRates().execute().body()
             if (body == null) Result.failure(RepositoryException(NullPointerException()))
             else Result.success(body.rates.map {
-                CurrencyRateData(it.symbol, it.price.toFloat())
+                CurrencyRateData(it.symbol, it.price)
             })
         } catch (e: Exception) {
             Result.failure(RepositoryException(e))
