@@ -1,8 +1,15 @@
 package com.k1apps.currencyrates.di
 
+import android.content.Context
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import com.k1apps.currencyrates.domain.usecase.CurrencyRateRepository
+import com.k1apps.currencyrates.domain.usecase.LoadCurrencyRatesUseCase
 import com.k1apps.currencyrates.infrustructure.remote.CurrencyRateApi
+import com.k1apps.currencyrates.infrustructure.remote.DefaultConnectionManager
 import com.k1apps.currencyrates.infrustructure.remote.DefaultCurrencyRateRepository
+import com.k1apps.currencyrates.viewmodel.CurrencyRatesViewModel
+import com.k1apps.currencyrates.viewmodel.CurrencyRatesViewModelFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -22,7 +29,18 @@ object ServiceLocator {
             .client(okHttpClient).build()
     }
 
-    fun getRepository(): CurrencyRateRepository {
+    private fun getRepository(): CurrencyRateRepository {
         return DefaultCurrencyRateRepository(getRetrofit().create(CurrencyRateApi::class.java))
     }
+
+    fun getUseCase(): LoadCurrencyRatesUseCase =
+        LoadCurrencyRatesUseCase(
+            getRepository(),
+            DefaultConnectionManager()
+        )
+
+    fun getCurrencyRatesViewModel(context: Context, viewModelStore: ViewModelStore): CurrencyRatesViewModel =
+        ViewModelProvider(
+            viewModelStore, CurrencyRatesViewModelFactory(getUseCase(), context = context)
+        )[CurrencyRatesViewModel::class.java]
 }

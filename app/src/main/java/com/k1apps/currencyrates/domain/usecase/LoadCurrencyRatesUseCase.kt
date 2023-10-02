@@ -18,7 +18,7 @@ class LoadCurrencyRatesUseCase(
             } else {
                 val repoResult = repository.getCurrencyRates()
                 if (isResultValid(repoResult)) {
-                    emit(Result.success(arrayListOf()))
+                    emit(Result.success(repoResult.getOrNull()!!))
                 } else {
                     emit(getErrorResult(CurrencyRatesException.Error.INVALID_DATA))
                 }
