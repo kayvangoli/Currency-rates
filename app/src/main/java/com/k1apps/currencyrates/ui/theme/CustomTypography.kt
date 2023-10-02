@@ -14,7 +14,7 @@ object CustomTypography {
         fontFamily = satoshiFont,
         fontSize = CustomDimensions.largeFontSize
     )
-    val rowTextStyleMeduim = TextStyle(
+    val rowTextStyleMedium = TextStyle(
         fontFamily = FontFamily(
             Font(R.font.satoshi_medium)
         ),

@@ -126,7 +126,7 @@ fun RateItemRow(rateItem: CurrencyRateViewData) {
         ) {
             Text(
                 text = rateItem.price,
-                style = CustomTypography.rowTextStyleMeduim,
+                style = CustomTypography.rowTextStyleMedium,
                 color = if (rateItem.currencyRateFlag == CurrencyRateFlag.UP) Green else Red
             )
 

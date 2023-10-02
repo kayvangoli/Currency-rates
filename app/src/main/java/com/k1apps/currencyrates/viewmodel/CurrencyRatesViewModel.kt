@@ -32,7 +32,7 @@ class CurrencyRatesViewModel(
                 if (result.isFailure) {
                     _errorMessage.postValue(result.exceptionOrNull()!!.message)
                 } else {
-                    _currencyRate.postValue(result.getOrNull()!!.map { currencyRateData ->
+                    val currencyRates = result.getOrNull()!!.map { currencyRateData ->
                         val oldItem = _currencyRate.value?.find { currencyRateViewData ->
                             currencyRateData.symbol == currencyRateViewData.name
                         }
@@ -53,7 +53,8 @@ class CurrencyRatesViewModel(
                             )
                         )
                         CurrencyRateViewData(name, imgRes, price, flag)
-                    })
+                    }
+                    _currencyRate.postValue(currencyRates)
                     _updateDate.postValue(formatDateToCustomFormat(Date()))
                 }
             }
