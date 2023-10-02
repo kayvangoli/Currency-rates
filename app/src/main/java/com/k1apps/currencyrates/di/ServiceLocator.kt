@@ -33,14 +33,14 @@ object ServiceLocator {
         return DefaultCurrencyRateRepository(getRetrofit().create(CurrencyRateApi::class.java))
     }
 
-    fun getUseCase(): LoadCurrencyRatesUseCase =
+    fun getUseCase(context: Context): LoadCurrencyRatesUseCase =
         LoadCurrencyRatesUseCase(
             getRepository(),
-            DefaultConnectionManager()
+            DefaultConnectionManager(context)
         )
 
     fun getCurrencyRatesViewModel(context: Context, viewModelStore: ViewModelStore): CurrencyRatesViewModel =
         ViewModelProvider(
-            viewModelStore, CurrencyRatesViewModelFactory(getUseCase(), context = context)
+            viewModelStore, CurrencyRatesViewModelFactory(getUseCase(context), context = context)
         )[CurrencyRatesViewModel::class.java]
 }
