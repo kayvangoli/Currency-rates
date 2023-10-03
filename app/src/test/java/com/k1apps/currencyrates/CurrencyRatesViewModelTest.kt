@@ -1,6 +1,6 @@
 package com.k1apps.currencyrates
 
-import android.content.Context
+import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.k1apps.currencyrates.domain.usecase.CurrencyRateData
 import com.k1apps.currencyrates.domain.usecase.CurrencyRatesException
@@ -32,7 +32,7 @@ class CurrencyRatesViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var context: Context
+    lateinit var application: Application
 
     @MockK
     lateinit var loadCurrencyRatesUseCase: LoadCurrencyRatesUseCase
@@ -47,7 +47,7 @@ class CurrencyRatesViewModelTest {
         MockKAnnotations.init(this)
         mockkStatic("com.k1apps.currencyrates.viewmodel.ExtensionsKt")
         every { formatDateToCustomFormat(any()) } returns "30/03/2023 - 16:00"
-        every { context.resources.getIdentifier(any(), any(), any()) } returns 0
+        every { application.resources.getIdentifier(any(), any(), any()) } returns 0
         updateMessage = "30/03/2023 - 16:00"
     }
 
@@ -57,7 +57,10 @@ class CurrencyRatesViewModelTest {
             /*Give*/
             val previousValues = arrayListOf(
                 CurrencyRateViewData(
-                    "currency", 0, 1.0.toString(), CurrencyRateFlag.DOWN
+                    "currency",
+                    "currency-1",
+                    0, 1.0.toString(),
+                    CurrencyRateFlag.DOWN
                 )
             )
             val currentValues = arrayListOf(
@@ -88,7 +91,7 @@ class CurrencyRatesViewModelTest {
         /*Give*/
         val previousValues = arrayListOf(
             CurrencyRateViewData(
-                "currency", 0, 3.0.toString(), CurrencyRateFlag.DOWN
+                "currency","currency-1", 0, 3.0.toString(), CurrencyRateFlag.DOWN
             )
         )
         val currentValues = arrayListOf(

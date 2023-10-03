@@ -1,22 +1,24 @@
 package com.k1apps.currencyrates.viewmodel
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.k1apps.currencyrates.domain.usecase.LoadCurrencyRatesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import java.text.DecimalFormat
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 
-@SuppressLint("StaticFieldLeak")
-class CurrencyRatesViewModel(
-     private val context: Context,
+@HiltViewModel
+class CurrencyRatesViewModel @Inject constructor(
+    private val application: Application,
     private val currencyRatesUseCase: LoadCurrencyRatesUseCase
 ) : ViewModel() {
 
@@ -25,7 +27,7 @@ class CurrencyRatesViewModel(
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
     private val _updateDate = MutableLiveData<String>()
-    val updateDate : LiveData<String> = _updateDate
+    val updateDate: LiveData<String> = _updateDate
     fun loadCurrencyRates() {
         viewModelScope.launch(Dispatchers.IO) {
             currencyRatesUseCase().collect { result ->
@@ -34,7 +36,7 @@ class CurrencyRatesViewModel(
                 } else {
                     val currencyRates = result.getOrNull()!!.map { currencyRateData ->
                         val oldItem = _currencyRate.value?.find { currencyRateViewData ->
-                            currencyRateData.symbol == currencyRateViewData.name
+                            currencyRateData.symbol == currencyRateViewData.id
                         }
                         val flag = if (oldItem == null) {
                             CurrencyRateFlag.UP
@@ -52,7 +54,7 @@ class CurrencyRatesViewModel(
                                 Locale.getDefault()
                             )
                         )
-                        CurrencyRateViewData(name, imgRes, price, flag)
+                        CurrencyRateViewData(currencyRateData.symbol, name, imgRes, price, flag)
                     }
                     _currencyRate.postValue(currencyRates)
                     _updateDate.postValue(formatDateToCustomFormat(Date()))
@@ -61,10 +63,14 @@ class CurrencyRatesViewModel(
         }
 
     }
+
     @SuppressLint("DiscouragedApi")
-    private fun getDrawableResourceId(drawableName: String): Int {
-        return context.resources.getIdentifier(drawableName, "drawable", context.packageName)
-    }
+    private fun getDrawableResourceId(drawableName: String): Int =
+        application.resources.getIdentifier(
+            drawableName, "drawable", application.packageName
+        )
+
+
     @TestOnly
     fun setFakeCurrencyRates(fakeValues: List<CurrencyRateViewData>) {
         _currencyRate.value = fakeValues

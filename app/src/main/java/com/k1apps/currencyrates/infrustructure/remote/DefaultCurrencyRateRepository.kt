@@ -2,8 +2,11 @@ package com.k1apps.currencyrates.infrustructure.remote
 
 import com.k1apps.currencyrates.domain.usecase.CurrencyRateData
 import com.k1apps.currencyrates.domain.usecase.CurrencyRateRepository
+import javax.inject.Inject
 
-class DefaultCurrencyRateRepository(private val api: CurrencyRateApi) : CurrencyRateRepository {
+class DefaultCurrencyRateRepository @Inject constructor(
+    private val api: CurrencyRateApi
+) : CurrencyRateRepository {
     override fun getCurrencyRates(): Result<List<CurrencyRateData>> {
         return try {
             val body = api.getRates().execute().body()

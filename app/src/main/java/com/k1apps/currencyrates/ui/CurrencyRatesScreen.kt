@@ -137,9 +137,7 @@ fun RateItemRow(rateItem: CurrencyRateViewData) {
                     R.drawable.ic_arrow_down
             Image(
                 painter = painterResource(id = arrowIcon),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(CustomDimensions.smallImageSize)
+                contentDescription = null
             )
         }
     }
@@ -148,5 +146,7 @@ fun RateItemRow(rateItem: CurrencyRateViewData) {
 @Preview
 @Composable
 fun Preview() {
-//    CurrencyRatesPage(CurrencyRatesViewModel(ServiceLocator.getUseCase()))
+    RateItemRow(rateItem = CurrencyRateViewData(
+        "EURUSD", "EUR/USD", R.drawable.eurusd, "1.1165", CurrencyRateFlag.DOWN
+    ))
 }
